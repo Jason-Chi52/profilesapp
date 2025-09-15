@@ -8,23 +8,7 @@ backend:
         - npm ci --include=dev
     build:
       commands:
-        # Gen 2 backend deploy
-        - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AMPLIFY_APP_ID
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - nvm install 20
-        - nvm use 20
-        - npm ci
-    build:
-      commands:
-        - npm run build
-  artifacts:
-    # change this to your app’s output dir:
-    baseDirectory: dist
-    files:
-      - '**/*'
+        - npx ampx pipeline-deploy --branch main --app-id d2h8rnvkxcy3jc
   cache:
     paths:
       - node_modules/**/*

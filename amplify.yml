@@ -4,9 +4,9 @@ backend:
   phases:
     preBuild:
       commands:
-        - nvm install 20
-        - nvm use 20
-        - npm ci --include=dev
+        - nvm install 20 || echo "nvm not available"
+        - nvm use 20 || echo "nvm not available"
+        - npm ci
     build:
       commands:
         - npx ampx pipeline-deploy --branch main --app-id d2h8rnvkxcy3jc
@@ -19,19 +19,12 @@ frontend:
   phases:
     preBuild:
       commands:
-        - nvm install 20
-        - nvm use 20
-        # Only install if a package.json exists
+        - nvm install 20 || echo "nvm not available"
+        - nvm use 20 || echo "nvm not available"
         - if [ -f package.json ]; then npm ci; fi
     build:
       commands:
-        - |
-          if [ -f package.json ] && node -e "p=require('./package.json');process.exit(!(p.scripts&&p.scripts.build))"; then
-            npm run build
-          else
-            mkdir -p dist
-            echo '<!doctype html><meta charset="utf-8"><title>Amplify</title><h1>Backend deployed ✔</h1><p>Replace this placeholder with your frontend build.</p>' > dist/index.html
-          fi
+        - npm run build
   artifacts:
     baseDirectory: dist
     files:

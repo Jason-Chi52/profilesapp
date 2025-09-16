@@ -1,4 +1,5 @@
 version: 1
+
 backend:
   phases:
     preBuild:
@@ -9,6 +10,32 @@ backend:
     build:
       commands:
         - npx ampx pipeline-deploy --branch main --app-id d2h8rnvkxcy3jc
+  cache:
+    paths:
+      - node_modules/**/*
+      - .npm/**/*
+
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - nvm install 20
+        - nvm use 20
+        # Only install if a package.json exists
+        - if [ -f package.json ]; then npm ci; fi
+    build:
+      commands:
+        - |
+          if [ -f package.json ] && node -e "p=require('./package.json');process.exit(!(p.scripts&&p.scripts.build))"; then
+            npm run build
+          else
+            mkdir -p dist
+            echo '<!doctype html><meta charset="utf-8"><title>Amplify</title><h1>Backend deployed ✔</h1><p>Replace this placeholder with your frontend build.</p>' > dist/index.html
+          fi
+  artifacts:
+    baseDirectory: dist
+    files:
+      - '**/*'
   cache:
     paths:
       - node_modules/**/*
